@@ -1,5 +1,6 @@
 package masip.marc.quiz;
 
+import android.content.res.Resources;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -15,23 +16,24 @@ public class QuizActivity extends AppCompatActivity {
             R.id.answer1, R.id.answer2, R.id.answer3, R.id.answer4
     };
 
-    private int solution;
-    private RadioGroup answers;
+    private RadioGroup rgroup;
+
+    //dades sobre preguntes
+    private String[] questions;
+    private String [][] answers;
+    private int[] solutions;
+
+    private int curr; //current question index
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_quiz);
 
-        TextView question_text = (TextView) findViewById(R.id.question_text);
-        question_text.setText(R.string.question_content);
+        curr = 0;
+        loadQuestions();
+        showQuestion();
 
-        String[] answer_texts = getResources().getStringArray(R.array.answer_tetxts);
-
-        for(int i = 0; i < answer_texts.length; i++){
-            RadioButton rb = (RadioButton) findViewById(ids_botons[i]);
-            rb.setText(answer_texts[i]);
-        }
         Button btn_check = (Button) findViewById(R.id.btn_check);
         btn_check.setOnClickListener(new View.OnClickListener() {//button listener
             @Override
@@ -40,12 +42,32 @@ public class QuizActivity extends AppCompatActivity {
             }
         });
 
-        solution = getResources().getInteger(R.integer.solution);
-        answers = (RadioGroup) findViewById(R.id.answers);
+        rgroup = (RadioGroup) findViewById(R.id.answers);
+    }
+
+    private void loadQuestions() {
+        Resources res = getResources();
+        questions = res.getStringArray(R.array.questions);
+        solutions = res.getIntArray(R.array.solutions);
+        String[] answ = res.getStringArray(R.array.answers);
+        answers = new String[answ.length][];//li assignem el  tamany de answ
+        for (int i = 0; i < answ.length; i++){
+            answers[i] = answ[i].split(";");
+        }
+    }
+
+    private void showQuestion() {
+        TextView question_text = (TextView) findViewById(R.id.question_text);
+        question_text.setText(questions[curr]);
+
+        for(int i = 0; i < answers[curr].length; i++){
+            RadioButton rb = (RadioButton) findViewById(ids_botons[i]);
+            rb.setText(answers[curr][i]);
+        }
     }
 
     private void checkAnswer() {
-        int id_checked = answers.getCheckedRadioButtonId();
+        int id_checked = rgroup.getCheckedRadioButtonId();
         int quin = -1;
         for (int i = 0; i < ids_botons.length; i++){
             if(id_checked == ids_botons[i]){
@@ -53,7 +75,7 @@ public class QuizActivity extends AppCompatActivity {
             }
         }
         if (quin != -1){
-            if (quin == solution){
+            if (quin == solutions[curr]){
                 Toast.makeText(this, "Correcte!", Toast.LENGTH_SHORT).show();
             }else{
                 Toast.makeText(this, "Incorrecte...", Toast.LENGTH_SHORT).show();
