@@ -1,5 +1,6 @@
 <resources>
     <string name="app_name">Quiz</string>
     <string name="question_label_1">Pregunta 1</string>
-    <string name="btn_check">Comprova</string>
+    <string name="check">Comprova</string>
+    <string name="next">Següent</string>
 </resources>
