@@ -77,7 +77,7 @@ public class QuizActivity extends AppCompatActivity {
             }
         }
         String msg = String.format("Correctes: %d / Incorrectes: %d", good, bad);
-        Toast.makeText(this, "", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, msg, Toast.LENGTH_SHORT).show();
         finish();
     }
 
